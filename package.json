@@ -17,7 +17,7 @@
     "semantic-release": "dotenv semantic-release"
   },
   "bin": {
-    "@atto-byte/yoga": "dist/cli/index.js"
+    "yoga": "dist/cli/index.js"
   },
   "dependencies": {
     "@types/ora": "^3.2.0",
