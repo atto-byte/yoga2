@@ -6,10 +6,14 @@
     "build": "yoga build",
     "build:ci": "yarn build",
     "start": "yoga start",
-    "lint": "echo linting disabled"
+    "lint": "echo linting disabled",
+    "eject": "yoga eject"
+
   },
   "dependencies": {
-    "@atto-byte/yoga": "latest"
+    "@atto-byte/yoga": "latest",
+    "graphql-shield": "^5.3.4",
+    "rimraf": "^2.6.3"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.4",

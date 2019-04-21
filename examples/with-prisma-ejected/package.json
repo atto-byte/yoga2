@@ -7,10 +7,14 @@
     "build:ci": "npx nexus-prisma-generate --output ./src/generated/nexus-prisma && yarn prisma generate && yoga build",
     "start": "yoga start",
     "scaffold": "yoga scaffold",
-    "lint": "echo linting disabled"
+    "lint": "echo linting disabled",
+    "eject": "yoga eject"
+
   },
   "dependencies": {
-    "@atto-byte/yoga": "latest"
+    "@atto-byte/yoga": "latest",
+    "graphql-shield": "^5.3.4",
+    "rimraf": "^2.6.3"
   },
   "devDependencies": {
     "@types/graphql": "^14.2.0",

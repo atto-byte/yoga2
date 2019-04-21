@@ -171,7 +171,7 @@ ${renderImportIf('graphqlMiddleware', fileDir, info.yogaConfig.graphqlMiddleware
 
 export default yogaEject({
   async server() {
-    const schema = makeSchema({
+    let schema = makeSchema({
       types,
       outputs: {
         schema: ${info.yogaConfig.output.schemaPath &&

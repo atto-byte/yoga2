@@ -25,7 +25,7 @@ const PACKAGE_JSON = `\
     "scaffold": "yoga scaffold"
   },
   "dependencies": {
-    "@atto-byte/yoga": "0.0.6"
+    "@atto-byte/yoga": "latest"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.4",

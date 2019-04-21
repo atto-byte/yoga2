@@ -1,18 +1,27 @@
-import { ApolloServer, express, makeSchema, yogaEject } from '@atto-byte/yoga'
-import { Server } from 'http'
 import * as path from 'path'
-import context from './context'
+import {
+  ApolloServer,
+  makeSchema,
+  express,
+  yogaEject,
+  middleware,
+} from '@atto-byte/yoga'
 import * as types from './graphql'
+import context from './context'
+
+import graphqlMiddleware from './graphqlMiddleware'
 
 export default yogaEject({
   async server() {
-    const app = express()
-
-    const schema = makeSchema({
+    let schema = makeSchema({
       types,
       outputs: {
-        schema: path.join(__dirname, './schema.graphql'),
+        schema: path.join(__dirname, './generated/schema.graphql'),
         typegen: path.join(__dirname, './generated/nexus.ts'),
+      },
+      nonNullDefaults: {
+        input: true,
+        output: true,
       },
       typegenAutoConfig: {
         sources: [
@@ -20,32 +29,28 @@ export default yogaEject({
             source: path.join(__dirname, './context.ts'),
             alias: 'ctx',
           },
+          ,
         ],
         contextType: 'ctx.Context',
       },
     })
-
+    schema = middleware.applyMiddleware(schema, ...graphqlMiddleware)
     const apolloServer = new ApolloServer.ApolloServer({
       schema,
       context,
     })
+    const app = express()
 
     apolloServer.applyMiddleware({ app, path: '/' })
 
     return app
   },
-  async startServer(express) {
-    return new Promise<Server>((resolve, reject) => {
-      const httpServer = express
-        .listen({ port: 4000 }, () => {
-          console.log(`🚀  Server ready at http://localhost:4000/`)
-
-          resolve(httpServer)
-        })
-        .on('error', err => reject(err))
+  async startServer(app) {
+    return app.listen({ port: 4000 }, () => {
+      console.log(`🚀  Server ready at http://localhost:4000/`)
     })
   },
-  async stopServer(httpServer) {
-    return httpServer.close()
+  async stopServer(http) {
+    http.close()
   },
 })
