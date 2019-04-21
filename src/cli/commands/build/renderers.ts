@@ -67,7 +67,7 @@ export function renderPrismaEjectFile(filePath: string, config: ConfigWithInfo) 
 
   return `
   import * as path from 'path'
-  import { ApolloServer, makePrismaSchema, express, yogaEject, applyMiddleware } from '@atto-byte/yoga'
+  import { ApolloServer, makePrismaSchema, express, yogaEject, middleware } from '@atto-byte/yoga'
   ${renderImportIf('* as types', fileDir, config.yogaConfig.resolversPath)}
   ${renderImportIf('context', fileDir, config.yogaConfig.contextPath)}
   ${renderImportIf('expressMiddleware', fileDir, config.yogaConfig.expressPath)}
@@ -131,7 +131,7 @@ export function renderPrismaEjectFile(filePath: string, config: ConfigWithInfo) 
           ${config.yogaConfig.contextPath ? `contextType: 'ctx.Context'` : ''}
         }
       })
-      ${config.yogaConfig.graphqlMiddlewarePath ? 'schema = applyMiddleware(schema, ...graphqlMiddleware)' : ''}
+      ${config.yogaConfig.graphqlMiddlewarePath ? 'schema = middleware.applyMiddleware(schema, ...graphqlMiddleware)' : ''}
       
       const apolloServer = new ApolloServer.ApolloServer({
         schema,
@@ -163,7 +163,7 @@ export function renderSimpleIndexFile(filePath: string, info: ConfigWithInfo) {
 
   return `\
 import * as path from 'path'
-import { ApolloServer, makeSchema, express, yogaEject, applyMiddleware } from '@atto-byte/yoga'
+import { ApolloServer, makeSchema, express, yogaEject, middleware } from '@atto-byte/yoga'
 ${renderImportIf('* as types', fileDir, info.yogaConfig.resolversPath)}
 ${renderImportIf('context', fileDir, info.yogaConfig.contextPath)}
 ${renderImportIf('expressMiddleware', fileDir, info.yogaConfig.expressPath)}
@@ -205,7 +205,7 @@ export default yogaEject({
         contextType: 'ctx.Context'
       }
     })
-    ${info.yogaConfig.graphqlMiddlewarePath ? 'schema = applyMiddleware(schema, ...graphqlMiddleware)' : ''}
+    ${info.yogaConfig.graphqlMiddlewarePath ? 'schema = middleware.applyMiddleware(schema, ...graphqlMiddleware)' : ''}
     const apolloServer = new ApolloServer.ApolloServer({
       schema,
       ${info.yogaConfig.contextPath ? 'context' : ''}
