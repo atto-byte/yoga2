@@ -4,10 +4,7 @@
   "main": "dist/index.js",
   "private": false,
   "repository": "https://github.com/atto-byte/yoga2.git",
-  "authors": [
-    "William LUKE <william@atto-byte.com>",
-    "Flavian DESVERNE <flavian.desverne@epitech.eu>"
-  ],
+  "author": "William LUKE <william@atto-byte.com>",
   "license": "MIT",
   "scripts": {
     "prepublish": "npm run build",
@@ -80,15 +77,12 @@
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-prettier": "^3.0.1",
     "semantic-release": "^15.13.3",
-    "semantic-release-cli": "^4.1.2",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-config-standard": "8.0.1"
+    "semantic-release-cli": "^4.1.2"
   },
   "prettier": {
     "semi": false,
     "singleQuote": true,
     "trailingComma": "all"
   },
-
   "gitHead": "28cdc869c914c90e90cce64cd31f3bc055d80336"
 }
