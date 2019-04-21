@@ -1,18 +1,20 @@
-import { ApolloServer } from 'apollo-server-express'
-import express from 'express'
-import { existsSync } from 'fs'
-import { Server } from 'http'
-import { makeSchema } from 'nexus'
-import { makePrismaSchema } from 'nexus-prisma'
-import * as path from 'path'
-import PrettyError from 'pretty-error'
-import { register } from 'ts-node'
-import { importYogaConfig } from './config'
-import { findFileByExtension, importFile } from './helpers'
-import * as logger from './logger'
-import { makeSchemaDefaults } from './nexusDefaults'
-import { ConfigWithInfo, Yoga } from './types'
-import nodeWatch from 'node-watch'
+import { ApolloServer } from 'apollo-server-express';
+import express from 'express';
+import { existsSync } from 'fs';
+import { GraphQLSchema } from 'graphql';
+import { applyMiddleware } from 'graphql-middleware';
+import { Server } from 'http';
+import { makeSchema } from 'nexus';
+import { makePrismaSchema } from 'nexus-prisma';
+import nodeWatch from 'node-watch';
+import * as path from 'path';
+import PrettyError from 'pretty-error';
+import { register } from 'ts-node';
+import { importYogaConfig } from './config';
+import { findFileByExtension, importFile } from './helpers';
+import * as logger from './logger';
+import { makeSchemaDefaults } from './nexusDefaults';
+import { ConfigWithInfo, GraphqlMiddleware, Yoga } from './types';
 
 const pe = new PrettyError().appendStyle({
   'pretty-error': {
@@ -143,15 +145,19 @@ export async function start(
  * @param resolversPath The `resolversPath` property from the `yoga.config.ts` file
  * @param contextPath The `contextPath` property from the `yoga.config.ts` file
  * @param expressPath The `expressPath` property from the `yoga.config.ts` file
+ * @param graphqlMiddlewarePath The `graphqlMiddlewarePath` property from the `yoga.config.ts` file
  */
+
 function importArtifacts(
   resolversPath: string,
   contextPath: string | undefined,
   expressPath: string | undefined,
+  graphqlMiddlewarePath: string | undefined,
 ): {
   types: Record<string, any>
   context?: any /** Context<any> | ContextFunction<any> */
   expressMiddleware?: (app: express.Application) => Promise<void> | void
+  graphqlMiddleware?: GraphqlMiddleware
 } {
   const resolversIndexPath = path.join(resolversPath, 'index.ts')
   let types: any = null
@@ -166,6 +172,7 @@ function importArtifacts(
 
   let context: (() => void) | undefined = undefined
   let express: (() => void) | undefined = undefined
+  let graphqlMiddleware: GraphqlMiddleware | undefined = undefined
 
   if (contextPath !== undefined) {
     context = importFile(contextPath, 'default')
@@ -182,10 +189,18 @@ function importArtifacts(
       throw new Error(`${expressPath} must default export a function`)
     }
   }
+  if (graphqlMiddlewarePath !== undefined) {
+    graphqlMiddleware = importFile(graphqlMiddlewarePath, 'default')
 
+    if (!graphqlMiddleware) {
+      throw new Error(`Unable to import graphqlMiddleware from ${graphqlMiddlewarePath}`)
+    }
+  }
+  
   return {
     context,
     expressMiddleware: express,
+    graphqlMiddleware: graphqlMiddleware,
     types,
   }
 }
@@ -201,22 +216,33 @@ function getYogaServer(info: ConfigWithInfo): Yoga {
     return {
       async server() {
         const app = express()
-        const { types, context, expressMiddleware } = importArtifacts(
+        const { types, context, expressMiddleware, graphqlMiddleware } = importArtifacts(
           config.resolversPath,
           config.contextPath,
           config.expressPath,
+          config.graphqlMiddlewarePath
         )
         const makeSchemaOptions = makeSchemaDefaults(
           config as any,
           types,
           info.prismaClientDir,
         )
-        const schema = config.prisma
-          ? makePrismaSchema({
-              ...makeSchemaOptions,
-              prisma: config.prisma,
-            })
-          : makeSchema(makeSchemaOptions)
+        let schema: GraphQLSchema;
+        if(config.prisma){
+          logger.info("Using MakePrismaSchema")
+          schema = makePrismaSchema({
+            ...makeSchemaOptions,
+            prisma: config.prisma,
+          })
+          logger.done("Prisma Schema Generated")
+        } else {
+          schema = makeSchema(makeSchemaOptions)
+        }
+        
+
+        if(graphqlMiddleware){
+          schema = applyMiddleware(schema, ...graphqlMiddleware)
+        }
         const server = new ApolloServer({
           schema,
           context,
