@@ -38,13 +38,8 @@ export async function watch(env?: string): Promise<void> {
   logger.info('Starting development server...')
   let info = importYogaConfig({ env })
 
-  let filesToWatch = [path.join(info.projectDir, 'src', '*.ts')]
+  let filesToWatch = [path.join(info.projectDir, 'src', '**','*.ts')]
   logger.info(`Watching ${JSON.stringify(filesToWatch)}`)
-
-  if (info.prismaClientDir && info.datamodelInfoDir) {
-    filesToWatch.push(info.prismaClientDir)
-    filesToWatch.push(info.datamodelInfoDir)
-  }
 
   let oldServer: any | undefined = await start(info, true)
   let filesToReloadBatched = [] as string[]
