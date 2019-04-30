@@ -20,6 +20,7 @@ const diagnosticHost: ts.FormatDiagnosticsHost = {
 }
 
 export default (argv: Record<string, string>) => {
+  argv.log && logger.setLogLevel(parseInt(argv.log))
   const config = importYogaConfig({ env: argv.env })
   const tsConfig = readConfigFromTsConfig(config)
 

@@ -23,6 +23,11 @@ function run() {
       alias: 'e',
       description: 'Pass a custom NODE_ENV variable',
     })
+    .option('log', {
+      alias: 'l',
+      description: 'Set the Verbosity Level',
+      type: 'number',
+    })
     .help('help')
     .showHelpOnFail(true)
     .version().argv

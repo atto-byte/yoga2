@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync } from 'fs';
 import { PrismaClientInput } from 'nexus-prisma/dist/types';
-import { join, relative } from 'path';
+import { join, normalize, relative } from 'path';
 import { findPrismaConfigFile } from './config';
 import { importFile } from './helpers';
 import * as logger from './logger';
@@ -217,7 +217,7 @@ export function client(
 ): PrismaClientInput {
   if (input === undefined) {
     logger.warn("No Prisma Client Input found trying to resolve path")
-    const defaultPath = join(projectDir, datamodelInfo.clientPath, 'index.ts')
+    const defaultPath = normalize(join(projectDir, datamodelInfo.clientPath, 'index.ts'))
     logger.info(`Looking for Prisma Client in ${defaultPath}`)
     const clientPath = requiredPath(
       defaultPath,
