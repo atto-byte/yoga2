@@ -217,7 +217,7 @@ export function client(
 ): PrismaClientInput {
   if (input === undefined) {
     logger.warn("No Prisma Client Input found trying to resolve path")
-    const defaultPath = join(projectDir, normalize(datamodelInfo.clientPath), 'index.ts')
+    const defaultPath = join(projectDir, datamodelInfo.clientPath.replace(/\\/g, "/"), 'index.ts')
     logger.info(`Looking for Prisma Client in ${defaultPath}`)
     const clientPath = requiredPath(
       defaultPath,
