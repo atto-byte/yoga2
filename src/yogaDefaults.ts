@@ -1,18 +1,11 @@
-import { existsSync } from 'fs'
-import { PrismaClientInput } from 'nexus-prisma/dist/types'
-import { join, relative } from 'path'
-import { findPrismaConfigFile } from './config'
-import { importFile } from './helpers'
-import {
-  Config,
-  DatamodelInfo,
-  InputConfig,
-  InputOutputFilesConfig,
-  InputPrismaConfig,
-  DefaultConfig,
-} from './types'
-import chalk from 'chalk'
-import * as logger from './logger'
+import chalk from 'chalk';
+import { existsSync } from 'fs';
+import { PrismaClientInput } from 'nexus-prisma/dist/types';
+import { join, relative } from 'path';
+import { findPrismaConfigFile } from './config';
+import { importFile } from './helpers';
+import * as logger from './logger';
+import { Config, DatamodelInfo, DefaultConfig, InputConfig, InputOutputFilesConfig, InputPrismaConfig } from './types';
 
 export const DEFAULTS: DefaultConfig = {
   contextPath: './src/context.ts',
@@ -224,8 +217,10 @@ export function client(
 ): PrismaClientInput {
   if (input === undefined) {
     logger.warn("No Prisma Client Input found trying to resolve path")
+    const defaultPath = join(projectDir, datamodelInfo.clientPath, 'index.ts')
+    logger.info(`Looking for Prisma Client in ${defaultPath}`)
     const clientPath = requiredPath(
-      join(projectDir, datamodelInfo.clientPath, 'index.ts'),
+      defaultPath,
       `${buildError(
         projectDir,
         datamodelInfo.clientPath,
