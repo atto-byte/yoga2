@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync } from 'fs';
 import { PrismaClientInput } from 'nexus-prisma/dist/types';
-import { join, normalize, relative } from 'path';
+import { join, relative } from 'path';
 import { findPrismaConfigFile } from './config';
 import { importFile } from './helpers';
 import * as logger from './logger';
