@@ -158,26 +158,26 @@ export function renderPrismaEjectFile(filePath: string, config: ConfigWithInfo) 
   `
 }
 
-export function renderSimpleIndexFile(filePath: string, info: ConfigWithInfo) {
+export function renderSimpleIndexFile(filePath: string, config: ConfigWithInfo) {
   const fileDir = path.dirname(filePath)
 
   return `\
 import * as path from 'path'
 import { ApolloServer, makeSchema, express, yogaEject, middleware } from '@atto-byte/yoga'
-${renderImportIf('* as types', fileDir, info.yogaConfig.resolversPath)}
-${renderImportIf('context', fileDir, info.yogaConfig.contextPath)}
-${renderImportIf('expressMiddleware', fileDir, info.yogaConfig.expressPath)}
-${renderImportIf('graphqlMiddleware', fileDir, info.yogaConfig.graphqlMiddlewarePath)}
+${renderImportIf('* as types', fileDir, config.yogaConfig.resolversPath)}
+${renderImportIf('context', fileDir, config.yogaConfig.contextPath)}
+${renderImportIf('expressMiddleware', fileDir, config.yogaConfig.expressPath)}
+${renderImportIf('graphqlMiddleware', fileDir, config.yogaConfig.graphqlMiddlewarePath)}
 
 export default yogaEject({
   async server() {
     let schema = makeSchema({
       types,
       outputs: {
-        schema: ${info.yogaConfig.output.schemaPath &&
-          renderPathJoin(fileDir, info.yogaConfig.output.schemaPath)},
-        typegen: ${info.yogaConfig.output.typegenPath &&
-          renderPathJoin(fileDir, info.yogaConfig.output.typegenPath)}
+        schema: ${config.yogaConfig.output.schemaPath &&
+          renderPathJoin(fileDir, config.yogaConfig.output.schemaPath)},
+        typegen: ${config.yogaConfig.output.typegenPath &&
+          renderPathJoin(fileDir, config.yogaConfig.output.typegenPath)}
       },
       nonNullDefaults: {
         input: true,
@@ -186,17 +186,17 @@ export default yogaEject({
       typegenAutoConfig: {
         sources: [
           ${
-            info.yogaConfig.contextPath
+            config.yogaConfig.contextPath
               ? `{
-            source: ${renderPathJoin(fileDir, info.yogaConfig.contextPath)},
+            source: ${renderPathJoin(fileDir, config.yogaConfig.contextPath)},
             alias: 'ctx',
           }`
               : ''
           },
           ${
-            info.yogaConfig.typesPath
+            config.yogaConfig.typesPath
               ? `{
-            source: ${renderPathJoin(fileDir, info.yogaConfig.typesPath)},
+            source: ${renderPathJoin(fileDir, config.yogaConfig.typesPath)},
             alias: 'types',
           }`
               : ''
@@ -205,14 +205,14 @@ export default yogaEject({
         contextType: 'ctx.Context'
       }
     })
-    ${info.yogaConfig.graphqlMiddlewarePath ? 'schema = middleware.applyMiddleware(schema, ...graphqlMiddleware)' : ''}
+    ${config.yogaConfig.graphqlMiddlewarePath ? 'schema = middleware.applyMiddleware(schema, ...graphqlMiddleware)' : ''}
     const apolloServer = new ApolloServer.ApolloServer({
       schema,
-      ${info.yogaConfig.contextPath ? 'context' : ''}
+      ${config.yogaConfig.contextPath ? 'context' : ''}
     })
     const app = express()
     
-    ${info.yogaConfig.expressPath ? 'await expressMiddleware({app})' : ''}
+    ${config.yogaConfig.expressPath ? 'await expressMiddleware({app})' : ''}
     apolloServer.applyMiddleware({ app, path: '/' })
 
     return app

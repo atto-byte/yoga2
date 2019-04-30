@@ -223,6 +223,7 @@ export function client(
   datamodelInfo: DatamodelInfo,
 ): PrismaClientInput {
   if (input === undefined) {
+    logger.warn("No Prisma Client Input found trying to resolve path")
     const clientPath = requiredPath(
       join(projectDir, datamodelInfo.clientPath, 'index.ts'),
       `${buildError(
@@ -233,7 +234,7 @@ export function client(
         'prisma deploy',
       )} to generate the needed files.`,
     )
-
+    logger.done(`Prisma Client Input found @ ${clientPath}`)
     return importFile<PrismaClientInput>(clientPath, 'prisma', true)
   }
 
@@ -285,7 +286,7 @@ function prisma(
   if (input === undefined && hasPrisma) {
     input = {}
   }
-
+  logger.info("Prisma Found in Project")
   const importedDatamodelInfo = datamodelInfo(
     projectDir,
     input!.datamodelInfoPath,

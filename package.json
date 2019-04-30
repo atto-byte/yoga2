@@ -40,6 +40,7 @@
     "node-watch": "^0.6.2",
     "ora": "^3.4.0",
     "parse-github-url": "^1.0.2",
+    "pkginfo": "^0.4.1",
     "pluralize": "^7.0.0",
     "prettier": "^1.17.0",
     "pretty-error": "2.2.0-rc.1",
