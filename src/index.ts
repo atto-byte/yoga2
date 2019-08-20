@@ -7,9 +7,8 @@ import { InputConfig as YogaConfig, MaybePromise, Yoga } from './types'
 import { injectCustomEnvironmentVariables } from './config'
 export * from 'nexus'
 export * from 'nexus-prisma'
-import gqlMiddleware from './gqlMiddleware';
+import gqlMiddleware from './gqlMiddleware'
 export { ApolloServer, express, logger, gqlMiddleware }
-
 
 injectCustomEnvironmentVariables()
 

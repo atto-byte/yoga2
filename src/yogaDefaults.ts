@@ -1,11 +1,18 @@
-import chalk from 'chalk';
-import { existsSync } from 'fs';
-import { PrismaClientInput } from 'nexus-prisma/dist/types';
-import { join, relative } from 'path';
-import { findPrismaConfigFile } from './config';
-import { importFile } from './helpers';
-import * as logger from './logger';
-import { Config, DatamodelInfo, DefaultConfig, InputConfig, InputOutputFilesConfig, InputPrismaConfig } from './types';
+import chalk from 'chalk'
+import { existsSync } from 'fs'
+import { PrismaClientInput } from 'nexus-prisma/dist/types'
+import { join, relative } from 'path'
+import { findPrismaConfigFile } from './config'
+import { importFile } from './helpers'
+import * as logger from './logger'
+import {
+  Config,
+  DatamodelInfo,
+  DefaultConfig,
+  InputConfig,
+  InputOutputFilesConfig,
+  InputPrismaConfig,
+} from './types'
 
 export const DEFAULTS: DefaultConfig = {
   contextPath: './src/context.ts',
@@ -37,7 +44,7 @@ export const DEFAULTS: DefaultConfig = {
     },
   },
   expressPath: './src/express.ts',
-  graphqlMiddlewarePath: './src/graphqlMiddleware.ts'
+  graphqlMiddlewarePath: './src/graphqlMiddleware.ts',
 }
 
 export const DEFAULT_META_SCHEMA_DIR = './src/generated/nexus-prisma/'
@@ -56,7 +63,10 @@ export function normalizeConfig(
     typesPath: typesPath(projectDir, config.typesPath),
     ejectedFilePath: ejectFilePath(projectDir, config.ejectedFilePath),
     expressPath: expressPath(projectDir, config.expressPath),
-    graphqlMiddlewarePath: graphqlMiddlewarePath(projectDir, config.graphqlMiddlewarePath),
+    graphqlMiddlewarePath: graphqlMiddlewarePath(
+      projectDir,
+      config.graphqlMiddlewarePath,
+    ),
     output: output(projectDir, config.output),
     prisma: prisma(projectDir, config.prisma),
   }
@@ -178,9 +188,17 @@ function graphqlMiddlewarePath(
   projectDir: string,
   input: string | undefined,
 ): string | undefined {
-  const path = inputOrDefaultPath(projectDir, input, DEFAULTS.graphqlMiddlewarePath!)
+  const path = inputOrDefaultPath(
+    projectDir,
+    input,
+    DEFAULTS.graphqlMiddlewarePath!,
+  )
 
-  return optional(path, input, buildError(projectDir, path, 'graphqlMiddleware'))
+  return optional(
+    path,
+    input,
+    buildError(projectDir, path, 'graphqlMiddleware'),
+  )
 }
 function output(
   projectDir: string,
@@ -216,8 +234,12 @@ export function client(
   datamodelInfo: DatamodelInfo,
 ): PrismaClientInput {
   if (input === undefined) {
-    logger.warn("No Prisma Client Input found trying to resolve path")
-    const defaultPath = join(projectDir, datamodelInfo.clientPath.replace(/\\/g, "/"), 'index.ts')
+    logger.warn('No Prisma Client Input found trying to resolve path')
+    const defaultPath = join(
+      projectDir,
+      datamodelInfo.clientPath.replace(/\\/g, '/'),
+      'index.ts',
+    )
     logger.info(`Looking for Prisma Client in ${defaultPath}`)
     const clientPath = requiredPath(
       defaultPath,
@@ -281,7 +303,7 @@ function prisma(
   if (input === undefined && hasPrisma) {
     input = {}
   }
-  logger.info("Prisma Found in Project")
+  logger.info('Prisma Found in Project')
   const importedDatamodelInfo = datamodelInfo(
     projectDir,
     input!.datamodelInfoPath,

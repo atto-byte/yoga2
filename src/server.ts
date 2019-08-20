@@ -1,20 +1,20 @@
-import { ApolloServer } from 'apollo-server-express';
-import express from 'express';
-import { existsSync } from 'fs';
-import { GraphQLSchema } from 'graphql';
-import { applyMiddleware } from 'graphql-middleware';
-import { Server } from 'http';
-import { makeSchema } from 'nexus';
-import { makePrismaSchema } from 'nexus-prisma';
-import nodeWatch from 'node-watch';
-import * as path from 'path';
-import PrettyError from 'pretty-error';
-import { register } from 'ts-node';
-import { importYogaConfig } from './config';
-import { findFileByExtension, importFile } from './helpers';
-import * as logger from './logger';
-import { makeSchemaDefaults } from './nexusDefaults';
-import { ConfigWithInfo, GraphqlMiddleware, Yoga } from './types';
+import { ApolloServer } from 'apollo-server-express'
+import express from 'express'
+import { existsSync } from 'fs'
+import { GraphQLSchema } from 'graphql'
+import { applyMiddleware } from 'graphql-middleware'
+import { Server } from 'http'
+import { makeSchema } from 'nexus'
+import { makePrismaSchema } from 'nexus-prisma'
+import nodeWatch from 'node-watch'
+import * as path from 'path'
+import PrettyError from 'pretty-error'
+import { register } from 'ts-node'
+import { importYogaConfig } from './config'
+import { findFileByExtension, importFile } from './helpers'
+import * as logger from './logger'
+import { makeSchemaDefaults } from './nexusDefaults'
+import { ConfigWithInfo, GraphqlMiddleware, Yoga } from './types'
 
 const pe = new PrettyError().appendStyle({
   'pretty-error': {
@@ -38,7 +38,7 @@ export async function watch(env?: string): Promise<void> {
   logger.info('Starting development server...')
   let info = importYogaConfig({ env })
 
-  let filesToWatch = [path.join(info.projectDir, 'src', '**','*.ts')]
+  let filesToWatch = [path.join(info.projectDir, 'src', '**', '*.ts')]
   logger.info(`Watching ${JSON.stringify(filesToWatch)}`)
 
   let oldServer: any | undefined = await start(info, true)
@@ -188,10 +188,12 @@ function importArtifacts(
     graphqlMiddleware = importFile(graphqlMiddlewarePath, 'default')
 
     if (!graphqlMiddleware) {
-      throw new Error(`Unable to import graphqlMiddleware from ${graphqlMiddlewarePath}`)
+      throw new Error(
+        `Unable to import graphqlMiddleware from ${graphqlMiddlewarePath}`,
+      )
     }
   }
-  
+
   return {
     context,
     expressMiddleware: express,
@@ -211,31 +213,35 @@ function getYogaServer(info: ConfigWithInfo): Yoga {
     return {
       async server() {
         const app = express()
-        const { types, context, expressMiddleware, graphqlMiddleware } = importArtifacts(
+        const {
+          types,
+          context,
+          expressMiddleware,
+          graphqlMiddleware,
+        } = importArtifacts(
           config.resolversPath,
           config.contextPath,
           config.expressPath,
-          config.graphqlMiddlewarePath
+          config.graphqlMiddlewarePath,
         )
         const makeSchemaOptions = makeSchemaDefaults(
           config as any,
           types,
           info.prismaClientDir,
         )
-        let schema: GraphQLSchema;
-        if(config.prisma){
-          logger.info("Using MakePrismaSchema")
+        let schema: GraphQLSchema
+        if (config.prisma) {
+          logger.info('Using MakePrismaSchema')
           schema = makePrismaSchema({
             ...makeSchemaOptions,
             prisma: config.prisma,
           })
-          logger.done("Prisma Schema Generated")
+          logger.done('Prisma Schema Generated')
         } else {
           schema = makeSchema(makeSchemaOptions)
         }
-        
 
-        if(graphqlMiddleware){
+        if (graphqlMiddleware) {
           schema = applyMiddleware(schema, ...graphqlMiddleware)
         }
         const server = new ApolloServer({

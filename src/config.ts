@@ -1,10 +1,10 @@
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as ts from 'typescript';
-import { importFile } from './helpers';
-import { Config, ConfigWithInfo, InputConfig } from './types';
-import { DEFAULT_META_SCHEMA_DIR, normalizeConfig } from './yogaDefaults';
+import * as dotenv from 'dotenv'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as ts from 'typescript'
+import { importFile } from './helpers'
+import { Config, ConfigWithInfo, InputConfig } from './types'
+import { DEFAULT_META_SCHEMA_DIR, normalizeConfig } from './yogaDefaults'
 
 /**
  * Find a `prisma.yml` file if it exists
@@ -121,9 +121,7 @@ export function importYogaConfig(
   const yogaConfigPath = findYogaConfigFile()
   const defaultProjectDir = findConfigFile('package.json', { required: true })
   const projectDir = path.dirname(
-    yogaConfigPath
-      ? yogaConfigPath
-      : defaultProjectDir,
+    yogaConfigPath ? yogaConfigPath : defaultProjectDir,
   )
   const inputConfig = yogaConfigPath
     ? importFile<InputConfig>(yogaConfigPath, 'default', opts.invalidate)

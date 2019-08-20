@@ -1,8 +1,11 @@
 import { PrismaClientInput, PrismaSchemaConfig } from 'nexus-prisma/dist/types'
 import Express from 'express'
 import { Server as HttpServer } from 'http'
-import { IMiddlewareWithOptions, IMiddlewareResolver } from 'graphql-middleware/dist/types';
-import { IMiddlewareTypeMap, IMiddlewareGenerator } from 'graphql-middleware';
+import {
+  IMiddlewareWithOptions,
+  IMiddlewareResolver,
+} from 'graphql-middleware/dist/types'
+import { IMiddlewareTypeMap, IMiddlewareGenerator } from 'graphql-middleware'
 
 export type MaybePromise<T> = Promise<T> | T
 
@@ -68,7 +71,7 @@ export type InputConfig = {
    * @default ./src/express.ts
    */
   expressPath?: string
-    /**
+  /**
    * Path to the `graphqlMiddleware.ts` file.
    * This file returns graphql middleware to inject into the schema .
    * **If provided, path has to exist**
@@ -89,8 +92,11 @@ type RequiredProperty<T extends keyof InputConfig> = Exclude<
   InputConfig[T],
   undefined
 >
-export type GraphqlMiddleware = 
-  (IMiddlewareGenerator<any, any, any> | IMiddlewareWithOptions<any, any, any> | IMiddlewareResolver<any, any, any> | IMiddlewareTypeMap<any, any, any>)[];
+export type GraphqlMiddleware = (
+  | IMiddlewareGenerator<any, any, any>
+  | IMiddlewareWithOptions<any, any, any>
+  | IMiddlewareResolver<any, any, any>
+  | IMiddlewareTypeMap<any, any, any>)[]
 
 export type Config = {
   resolversPath: RequiredProperty<'resolversPath'>
