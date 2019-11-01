@@ -1,6 +1,6 @@
 {
   "name": "@atto-byte/yoga",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "main": "dist/index.js",
   "private": false,
   "repository": "https://github.com/atto-byte/yoga2.git",
