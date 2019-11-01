@@ -239,8 +239,8 @@ This is a temporary workflow until we open up the prisma-cli API
 
 function choicesFromGraphQLTypes(
   types: GraphQLObjectType[],
-): inquirer.ChoiceType[] {
-  const choices: inquirer.ChoiceType[] = []
+): any {
+  const choices: any[] = []
 
   // if (typeName === 'Query' && f === 'node')
   // typeName !== Query || f !== 'node'

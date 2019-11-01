@@ -1,14 +1,14 @@
-import * as tar from 'tar'
-import * as tmp from 'tmp'
-import github from 'parse-github-url'
+import chalk from 'chalk'
+import execa from 'execa'
 import * as fs from 'fs'
 import ora from 'ora'
+import github from 'parse-github-url'
 import request from 'request'
-import execa from 'execa'
-import chalk from 'chalk'
-
-import { Template } from './templates'
+import * as tar from 'tar'
+import * as tmp from 'tmp'
 import * as logger from '../../../logger'
+import { Template } from './templates'
+
 
 export interface LoadOptions {
   installDependencies: boolean
@@ -102,9 +102,9 @@ export async function installYogaStarter(path: string): Promise<void> {
 
   try {
     if (await isYarnInstalled()) {
-      await execa.shell('yarnpkg install', { stdio: `ignore` })
+      await execa('yarnpkg install', { stdio: `ignore` })
     } else {
-      await execa.shell('npm install', { stdio: `ignore` })
+      await execa('npm install', { stdio: `ignore` })
     }
 
     spinner.succeed()
@@ -115,7 +115,7 @@ export async function installYogaStarter(path: string): Promise<void> {
 
 async function isYarnInstalled(): Promise<boolean> {
   try {
-    await execa.shell(`yarnpkg --version`, { stdio: `ignore` })
+    await execa(`yarnpkg --version`, { stdio: `ignore` })
     return true
   } catch (err) {
     return false

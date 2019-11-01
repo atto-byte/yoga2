@@ -13,7 +13,7 @@ import * as logger from '../../../logger'
 export default async (argv: Record<string, string>) => {
   const { yogaConfig, projectDir } = importYogaConfig({ env: argv.env })
   const hasDb = !!yogaConfig.prisma
-  const inputTypeQuestion: inquirer.Question<{ inputTypeName: string }> = {
+  const inputTypeQuestion: inquirer.QuestionCollection<{ inputTypeName: string }> = {
     name: 'inputTypeName',
     message: 'Input the name of your type',
     type: 'input',
@@ -316,7 +316,7 @@ async function runPrismaDeploy(): Promise<any> {
 
 async function isPrismaInstalledGlobally(): Promise<boolean> {
   try {
-    await execa.shell(`prisma --version`, { stdio: `ignore` })
+    await execa(`prisma --version`, { stdio: `ignore` })
     return true
   } catch (err) {
     return false
@@ -325,7 +325,7 @@ async function isPrismaInstalledGlobally(): Promise<boolean> {
 
 async function isPrismaInstalledLocally(): Promise<boolean> {
   try {
-    await execa.shell(`yarn prisma --version`, { stdio: `ignore` })
+    await execa(`yarn prisma --version`, { stdio: `ignore` })
     return true
   } catch (err) {
     return false
@@ -334,7 +334,7 @@ async function isPrismaInstalledLocally(): Promise<boolean> {
 
 async function isYarnInstalled(): Promise<boolean> {
   try {
-    await execa.shell(`yarnpkg --version`, { stdio: `ignore` })
+    await execa(`yarnpkg --version`, { stdio: `ignore` })
     return true
   } catch (err) {
     return false
